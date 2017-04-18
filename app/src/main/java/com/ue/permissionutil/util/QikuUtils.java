@@ -3,73 +3,43 @@
  */
 package com.ue.permissionutil.util;
 
-import android.annotation.TargetApi;
-import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Binder;
-import android.os.Build;
-import android.util.Log;
 
-import java.lang.reflect.Method;
+import static com.ue.permissionutil.util.CommonUtils.isIntentAvailable;
 
 public class QikuUtils {
-    private static final String TAG = "QikuUtils";
+    private static final String TAG = QikuUtils.class.getSimpleName();
 
-    /**
-     * 检测 360 悬浮窗权限
-     */
-    public static boolean checkFloatWindowPermission(Context context) {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 19) {
-            return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
+    public static void forwardPermSettingPage(Context context,int permOp){
+        if(permOp==PermissionInfoUtil.OP_SYSTEM_ALERT_WINDOW){
+            forwardPopupWinPermSettingPage(context);
+        }else{
+            forwardPermSettingsPage(context);
         }
-        return true;
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static boolean checkOp(Context context, int op) {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 19) {
-            AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-            try {
-                Class clazz = AppOpsManager.class;
-                Method method = clazz.getDeclaredMethod("checkOp", int.class, int.class, String.class);
-                return AppOpsManager.MODE_ALLOWED == (int)method.invoke(manager, op, Binder.getCallingUid(), context.getPackageName());
-            } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
-        } else {
-            Log.e("", "Below API 19 cannot invoke!");
-        }
-        return false;
-    }
-
-    /**
-     * 去360权限申请页面
-     */
-    public static void applyPermission(Context context) {
+    private static void forwardPopupWinPermSettingPage(Context context) {
         Intent intent = new Intent();
-        intent.setClassName("com.android.settings", "com.android.settings.Settings$OverlaySettingsActivity");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClassName("com.android.settings", "com.android.settings.Settings$OverlaySettingsActivity");
         if (isIntentAvailable(intent, context)) {
             context.startActivity(intent);
-        } else {
-            intent.setClassName("com.qihoo360.mobilesafe", "com.qihoo360.mobilesafe.ui.index.AppEnterActivity");
-            if (isIntentAvailable(intent, context)) {
-                context.startActivity(intent);
-            } else {
-                Log.e(TAG, "can't open permission page with particular name, please use " +
-                        "\"adb shell dumpsys activity\" command and tell me the name of the float window permission page");
-            }
+            return;
         }
+
+        forwardPermSettingsPage(context);
     }
 
-    private static boolean isIntentAvailable(Intent intent, Context context) {
-        if (intent == null) {
-            return false;
+    private static void forwardPermSettingsPage(Context context) {
+        Intent intent =new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClassName("com.qihoo360.mobilesafe", "com.qihoo360.mobilesafe.ui.index.AppEnterActivity");
+        if (isIntentAvailable(intent, context)) {
+            context.startActivity(intent);
+            return;
         }
-        return context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0;
+
+        CommonUtils.forwardAppDetailPage(context);
     }
 }

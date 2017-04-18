@@ -14,8 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.ue.permissionutil.RomUtil;
-
 import java.lang.reflect.Method;
 
 import static com.ue.permissionutil.util.PermissionInfoUtil.OP_SYSTEM_ALERT_WINDOW;
@@ -26,7 +24,7 @@ import static com.ue.permissionutil.util.PermissionInfoUtil.OP_WRITE_SETTINGS;
  */
 
 public class PermissionUtils {
-    private static final String TAG = "ezy-settings-compat";
+    private static final String TAG = PermissionUtils.class.getSimpleName();
 
     @SuppressLint("NewApi")
     public static boolean checkPermission(Context context, int permissionOp, String accessibilitySerName) {
@@ -78,33 +76,34 @@ public class PermissionUtils {
         return false;
     }
 
-    private static boolean isIntentAvailable(Intent intent, Context context) {
-        if (intent == null) {
-            return false;
+    public void forwardPermSettingPage(Context context,int permOp){
+        if (RomUtils.isMiui()) {
+            MiuiUtils.forwardPermSettingPage(context,permOp);
+            return;
         }
-        return context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0;
-    }
-
-
-
-
-    public static boolean canDrawOverlays(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return Settings.canDrawOverlays(context);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return checkOp(context, OP_SYSTEM_ALERT_WINDOW);
-        } else {
-            return true;
+        if (RomUtils.isEmui()) {
+            HuaweiUtils.forwardPermSettingPage(context,permOp);
+            return;
         }
-    }
-
-    public static boolean canWriteSettings(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return Settings.System.canWrite(context);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return checkOp(context, OP_WRITE_SETTINGS);
-        } else {
-            return true;
+        if (RomUtils.isFlyme()) {
+            MeizuUtils.forwardPermSettingPage(context,permOp);
+            return;
+        }
+        if (RomUtils.isQiku()) {
+            QikuUtils.forwardPermSettingPage(context,permOp);
+            return;
+        }
+        if (RomUtils.isOppo()) {
+            return manageDrawOverlaysForOppo(context);
+            return;
+        }
+        if (RomUtils.isVivo()) {
+            return manageDrawOverlaysForVivo(context);
+            return;
+        }
+        if (RomUtils.isSmartisan()) {
+            return manageDrawOverlaysForSmartisan(context);
+            return;
         }
     }
 
@@ -128,43 +127,6 @@ public class PermissionUtils {
             context.startActivity(intent);
         }
     }
-
-    private static boolean manageDrawOverlaysForRom(Context context) {
-        if (RomUtil.isMiui()) {
-            return manageDrawOverlaysForMiui(context);
-        }
-        if (RomUtil.isEmui()) {
-            return manageDrawOverlaysForEmui(context);
-        }
-        if (RomUtil.isFlyme()) {
-            return manageDrawOverlaysForFlyme(context);
-        }
-        if (RomUtil.isOppo()) {
-            return manageDrawOverlaysForOppo(context);
-        }
-        if (RomUtil.isVivo()) {
-            return manageDrawOverlaysForVivo(context);
-        }
-        if (RomUtil.isQiku()) {
-            return manageDrawOverlaysForQihu(context);
-        }
-        if (RomUtil.isSmartisan()) {
-            return manageDrawOverlaysForSmartisan(context);
-        }
-        return false;
-    }
-
-    private static boolean startSafely(Context context, Intent intent) {
-        if (context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-            return true;
-        } else {
-            Log.e(TAG, "Intent is not available! " + intent);
-            return false;
-        }
-    }
-
 
     // 小米
     private static boolean manageDrawOverlaysForMiui(Context context) {
