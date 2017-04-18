@@ -1,10 +1,13 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.util.rom;
 
 import android.content.Context;
 import android.content.Intent;
+
+import com.ue.permissionutil.util.CommonUtils;
+import com.ue.permissionutil.util.PermissionInfoUtil;
 
 public class MeizuUtils {
 

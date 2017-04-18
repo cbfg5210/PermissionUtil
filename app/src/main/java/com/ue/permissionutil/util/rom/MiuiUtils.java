@@ -1,12 +1,15 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.util.rom;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
+
+import com.ue.permissionutil.util.CommonUtils;
+import com.ue.permissionutil.util.PermissionInfoUtil;
 
 import static com.ue.permissionutil.util.CommonUtils.isIntentAvailable;
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.util.rom;
 
 import android.os.Build;
 import android.text.TextUtils;

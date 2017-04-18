@@ -14,10 +14,13 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.lang.reflect.Method;
+import com.ue.permissionutil.util.rom.HuaweiUtils;
+import com.ue.permissionutil.util.rom.MeizuUtils;
+import com.ue.permissionutil.util.rom.MiuiUtils;
+import com.ue.permissionutil.util.rom.QikuUtils;
+import com.ue.permissionutil.util.rom.RomUtils;
 
-import static com.ue.permissionutil.util.PermissionInfoUtil.OP_SYSTEM_ALERT_WINDOW;
-import static com.ue.permissionutil.util.PermissionInfoUtil.OP_WRITE_SETTINGS;
+import java.lang.reflect.Method;
 
 /**
  * Created by hawk on 2017/4/17.
