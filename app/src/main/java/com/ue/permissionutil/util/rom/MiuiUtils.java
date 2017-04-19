@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.Settings;
 
 import com.ue.permissionutil.util.CommonUtils;
-import com.ue.permissionutil.util.PermissionInfoUtil;
 
 import static com.ue.permissionutil.util.CommonUtils.isIntentAvailable;
 

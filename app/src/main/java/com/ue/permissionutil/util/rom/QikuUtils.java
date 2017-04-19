@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.ue.permissionutil.util.CommonUtils;
-import com.ue.permissionutil.util.PermissionInfoUtil;
 
 import static com.ue.permissionutil.util.CommonUtils.isIntentAvailable;
 
