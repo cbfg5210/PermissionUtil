@@ -1,4 +1,4 @@
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.common;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.widget.Toast;
 
-import com.ue.permissionutil.R;
+import java.util.Locale;
 
 /**
  * Created by hawk on 2017/4/18.
@@ -32,19 +32,22 @@ public class CommonUtils {
             return;
         }
 
+        boolean isZhLanguage = Locale.getDefault().getLanguage().equals(new Locale("zh").getLanguage());
+        final String toastMsg = isZhLanguage ? "定位不到设置页面,请手动前往设置" : "Unable to navigate to the setting page,please go to settings manually.";
+
         //如果是在主线程
         if (Looper.getMainLooper() == Looper.myLooper()) {
-            Toast.makeText(context, context.getResources().getString(R.string.go_setting_self), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show();
             return;
         }
         if (!(context instanceof Activity)) {
             return;
         }
-        Activity contextAty= (Activity) context;
+        Activity contextAty = (Activity) context;
         contextAty.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context, context.getResources().getString(R.string.go_setting_self), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show();
             }
         });
     }

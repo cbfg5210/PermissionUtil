@@ -1,4 +1,4 @@
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.common;
 
 import android.content.Context;
 import android.provider.Settings;
@@ -12,7 +12,7 @@ public class AccessibilityUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static ArrayList<String> getAllAccessibilityServices(Context context) {
+    private static ArrayList<String> getAllAccessibilityServices(Context context) {
         TextUtils.SimpleStringSplitter colonSplitter = new TextUtils.SimpleStringSplitter(':');
         ArrayList<String> allAccessibilityServices = new ArrayList<String>();
 

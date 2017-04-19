@@ -1,4 +1,4 @@
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.common;
 
 /**
  * Created by hujiang on 2017/4/19.
@@ -70,6 +70,6 @@ public class PermissionOps {
     public static final int OP_GET_ACCOUNTS = 62;
     public static final int OP_RUN_IN_BACKGROUND = 63;
     //自定义添加
-    public static final int OP_NOTIFICATION_LISTENER=64;//自定义添加：通知监听
-    public static final int OP_ACCESSIBILITY=65;//自定义添加：无障碍
+    public static final int OP_NOTIFICATION_LISTENER = 64;//自定义添加：通知监听
+    public static final int OP_ACCESSIBILITY = 65;//自定义添加：无障碍
 }

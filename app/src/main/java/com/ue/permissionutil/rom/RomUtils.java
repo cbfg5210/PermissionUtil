@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.ue.permissionutil.util.rom;
+package com.ue.permissionutil.rom;
 
 import android.os.Build;
 import android.text.TextUtils;
@@ -100,7 +100,7 @@ public class RomUtils {
     }
 
     public static boolean isQiku() {
-        return isTheManufacturer("qiku")||isTheManufacturer("360");
+        return isTheManufacturer("qiku") || isTheManufacturer("360");
     }
 
     public static boolean isSmartisan() {

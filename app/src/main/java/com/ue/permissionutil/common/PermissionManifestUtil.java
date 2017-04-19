@@ -1,4 +1,4 @@
-package com.ue.permissionutil.util;
+package com.ue.permissionutil.common;
 
 import android.Manifest;
 import android.text.TextUtils;
@@ -7,30 +7,30 @@ import android.text.TextUtils;
  * Created by hujiang on 2017/4/19.
  */
 
-public class ManifestPermissionUtil {
-    public static String getManifestPermission(int permOp){
-        if(permOp<0||permOp>=permissions.length){
+public class PermissionManifestUtil {
+    public static String getManifestPermission(int permOp) {
+        if (permOp < 0 || permOp >= permissions.length) {
             return null;
         }
         return permissions[permOp];
     }
 
-    public static int getPermissionOp(String manifestPermission){
-        if(TextUtils.isEmpty(manifestPermission)){
+    public static int getPermissionOp(String manifestPermission) {
+        if (TextUtils.isEmpty(manifestPermission)) {
             return -1;
         }
-        for(int i=0,len=permissions.length;i<len;i++){
-            if(permissions[i]==null){
+        for (int i = 0, len = permissions.length; i < len; i++) {
+            if (permissions[i] == null) {
                 continue;
             }
-            if(manifestPermission.equals(permissions[i])){
+            if (manifestPermission.equals(permissions[i])) {
                 return i;
             }
         }
         return -1;
     }
 
-    private static String[] permissions = new String[] {
+    private static String[] permissions = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             null,
