@@ -85,7 +85,7 @@ public class PermissionNameUtil {
             null, // no permission for turning the screen on
             "访问帐户列表",//Manifest.permission.GET_ACCOUNTS,
             null, // no permission for running in background
-            "通知栏监听",
+            "通知读取权限",
             "无障碍"
     };
 

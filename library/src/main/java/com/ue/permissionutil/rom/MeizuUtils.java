@@ -29,11 +29,9 @@ public class MeizuUtils {
         Intent intent;
 
         intent = new Intent("com.meizu.safe.security.SHOW_APPSEC");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClassName("com.meizu.safe", "com.meizu.safe.security.AppSecActivity");
         intent.putExtra("packageName", context.getPackageName());
-        if (CommonUtils.isIntentAvailable(intent, context)) {
-            context.startActivity(intent);
+        if (CommonUtils.safelyStartActivity(context,intent)) {
             return;
         }
 

@@ -5,7 +5,8 @@ package com.ue.permissionutil.rom;
 
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
+
+import com.ue.permissionutil.common.CommonUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -88,13 +89,12 @@ public class RomUtils {
     public static boolean isFlyme() {
         String meizuFlymeOSFlag = getSystemProperty("ro.build.display.id");
         if (!TextUtils.isEmpty(meizuFlymeOSFlag)) {
-            return true;
-        }
-        if (meizuFlymeOSFlag.contains("flyme") || meizuFlymeOSFlag.toLowerCase().contains("flyme")) {
-            return true;
-        }
-        if (Build.DISPLAY.toUpperCase().contains(ROM_FLYME)) {
-            return true;
+            if (meizuFlymeOSFlag.toLowerCase().contains("flyme")) {
+                return true;
+            }
+            if (Build.DISPLAY.toUpperCase().contains(ROM_FLYME)) {
+                return true;
+            }
         }
         return isTheManufacturer("meizu");
     }
@@ -123,14 +123,14 @@ public class RomUtils {
             line = input.readLine();
             input.close();
         } catch (IOException ex) {
-            Log.e(TAG, "Unable to read sysprop " + propName, ex);
+            CommonUtils.logE("Unable to read sysprop " + propName + "\n" + ex);
             return null;
         } finally {
             if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "Exception while closing InputStream", e);
+                    CommonUtils.logE("Exception while closing InputStream"+"\n"+e);
                 }
             }
         }

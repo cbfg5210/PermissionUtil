@@ -1,0 +1,6 @@
+
+无法判断权限是否开启:
+
+api19以下版本
+vivo-Android4.4.4
+oppo-Android4.4.4

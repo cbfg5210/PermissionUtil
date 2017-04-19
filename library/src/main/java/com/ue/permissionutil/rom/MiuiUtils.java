@@ -11,8 +11,6 @@ import android.provider.Settings;
 import com.ue.permissionutil.common.CommonUtils;
 import com.ue.permissionutil.common.PermissionOps;
 
-import static com.ue.permissionutil.common.CommonUtils.isIntentAvailable;
-
 public class MiuiUtils {
 
     public static void forwardPermSettingPage(Context context, int permOp) {
@@ -34,9 +32,7 @@ public class MiuiUtils {
         intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
         intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
         intent.putExtra("extra_pkgname", context.getPackageName());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (isIntentAvailable(intent, context)) {
-            context.startActivity(intent);
+        if (CommonUtils.safelyStartActivity(context, intent)) {
             return;
         }
 
@@ -45,8 +41,7 @@ public class MiuiUtils {
         intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity");
         intent.putExtra("extra_pkgname", context.getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (isIntentAvailable(intent, context)) {
-            context.startActivity(intent);
+        if (CommonUtils.safelyStartActivity(context, intent)) {
             return;
         }
 
@@ -55,8 +50,7 @@ public class MiuiUtils {
         intent.setPackage("com.miui.securitycenter");
         intent.putExtra("extra_pkgname", context.getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (isIntentAvailable(intent, context)) {
-            context.startActivity(intent);
+        if (CommonUtils.safelyStartActivity(context, intent)) {
             return;
         }
 
@@ -65,9 +59,7 @@ public class MiuiUtils {
         intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", packageName, null);
         intent.setData(uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (isIntentAvailable(intent, context)) {
-            context.startActivity(intent);
+        if (CommonUtils.safelyStartActivity(context, intent)) {
             return;
         }
 

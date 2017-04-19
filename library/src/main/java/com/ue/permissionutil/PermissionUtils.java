@@ -10,7 +10,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.ue.permissionutil.common.AccessibilityUtil;
 import com.ue.permissionutil.common.CommonUtils;
@@ -33,7 +32,6 @@ import java.lang.reflect.Method;
  */
 
 public class PermissionUtils {
-    private static final String TAG = PermissionUtils.class.getSimpleName();
 
     @SuppressLint("NewApi")
     public static int checkPermission(Context context, int permissionOp) {
@@ -45,13 +43,13 @@ public class PermissionUtils {
         }
 
         if (version < 19) {
-            Log.e(TAG, "Below API 19 cannot invoke!");
+            CommonUtils.logE("Below API 19 cannot invoke!");
             return PermissionStatus.PERMISSION_UNKNOWN;
         }
 
         //读取通知权限单独处理,api19以下，该方法判断不了通知权限，所以要放在version<19的判断之后
         if (permissionOp == PermissionOps.OP_NOTIFICATION_LISTENER) {
-            return checkNotificationPermission(context) ? PermissionStatus.PERMISSION_GRANTED : PermissionStatus.PERMISSION_DENIED;
+            return checkNotificationPermission(context) ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         }
 
         if (version >= 23 && permissionOp != PermissionOps.OP_SYSTEM_ALERT_WINDOW) {
@@ -61,27 +59,27 @@ public class PermissionUtils {
                 return PermissionStatus.PERMISSION_UNKNOWN;
             }
             boolean isGranted = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, manifestPermission);
-            return isGranted ? PermissionStatus.PERMISSION_GRANTED : PermissionStatus.PERMISSION_DENIED;
+            return isGranted ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         }
         //通过反射调用系统方法判断
-        boolean isGranted = checkOp(context, permissionOp);
-        return isGranted ? PermissionStatus.PERMISSION_GRANTED : PermissionStatus.PERMISSION_DENIED;
+        return checkOp(context, permissionOp);
     }
 
     @SuppressLint("NewApi")
-    private static boolean checkOp(Context context, int op) {
+    private static int checkOp(Context context, int op) {
         if (Build.VERSION.SDK_INT < 19) {
-            Log.e(TAG, "Below API 19 cannot invoke!");
-            return true;
+            CommonUtils.logE("Below API 19 cannot invoke!");
+            return PermissionStatus.PERMISSION_UNKNOWN;
         }
         AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
         try {
             Method method = AppOpsManager.class.getDeclaredMethod("checkOp", int.class, int.class, String.class);
-            return AppOpsManager.MODE_ALLOWED == (int) method.invoke(manager, op, Binder.getCallingUid(), context.getPackageName());
+            int res = (int) method.invoke(manager, op, Binder.getCallingUid(), context.getPackageName());
+            return res == AppOpsManager.MODE_ALLOWED ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            CommonUtils.logE(e.getMessage());
         }
-        return false;
+        return PermissionStatus.PERMISSION_UNKNOWN;
     }
 
     private static boolean checkNotificationPermission(Context context) {
@@ -108,7 +106,7 @@ public class PermissionUtils {
         return AccessibilityUtil.isAccessibilityServiceOn(context, accessibilitySerName);
     }
 
-    public void forwardPermSettingPage(Context context, int permOp) {
+    public static void forwardPermSettingPage(Context context, int permOp) {
         if (RomUtils.isMiui()) {
             MiuiUtils.forwardPermSettingPage(context, permOp);
             return;
