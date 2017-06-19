@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -19,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //添加配置
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -28,4 +35,116 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
+}
+
+//upload to bintray
+
+//项目主页
+def siteUrl = 'https://github.com/xxx'
+//项目的git地址
+def gitUrl = 'https://github.com/xxx'
+// 上传到 Bintray 的 package 名称。
+def libName = "permissionutil";
+// 以下两个参数配置是为了最终生成 compile 'me.lfq:依赖库的名称:1.0.0'  group  version 是关键字，自动识别的。只需配置好就行。
+def eGroup = "com.ue";
+def eVersion = "1.0";
+def eDescription = "";
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += configurations.compile
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/7/docs/api"
+        title "$libName $eDescription"
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name libName
+            description eDescription
+            url siteUrl
+            inceptionYear '2017'
+
+            packaging 'aar'
+            groupId eGroup
+            artifactId libName
+            version eVersion
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl // Git仓库地址。
+                url siteUrl
+            }
+            developers {
+                developer {
+                    id 'tomhawk'
+                    name 'tomhawk'
+                    email 'tomhawk_ht@foxmail.com'
+                }
+            }
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("BINTRAY_USER")
+    key = properties.getProperty("BINTRAY_KEY")
+
+    configurations = ['archives']
+
+    dryRun = false
+    publish = true
+
+    pkg {
+        repo = libName
+        name = libName
+        licenses = ['Apache-2.0']
+        vcsUrl = gitUrl
+        websiteUrl = siteUrl
+        publicDownloadNumbers = true
+//        version {
+//            name = eVersion
+//            desc = eDescription
+//            vcsTag = eVcsTag
+//
+//            gpg {
+//                sign = true
+//            }
+//        }
+    }
 }
