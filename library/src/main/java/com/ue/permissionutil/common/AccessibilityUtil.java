@@ -43,4 +43,18 @@ public class AccessibilityUtil {
         concat.append(serviceName);
         return allAccessibilityServices.contains(concat.toString());
     }
+
+    public static boolean isAccessibilityServiceOn(Context context) {
+        ArrayList allAccessibilityServices = getAllAccessibilityServices(context);
+
+        if (allAccessibilityServices == null && allAccessibilityServices.size() == 0) {
+            return false;
+        }
+        for (int i = allAccessibilityServices.size() - 1; i >= 0; --i) {
+            if (((String) allAccessibilityServices.get(i)).contains(context.getPackageName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

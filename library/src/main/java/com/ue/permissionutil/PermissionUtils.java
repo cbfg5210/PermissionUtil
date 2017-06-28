@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
@@ -37,9 +38,9 @@ public class PermissionUtils {
     public static int checkPermission(Context context, int permissionOp) {
         final int version = Build.VERSION.SDK_INT;
 
-        //该方法不能判断无障碍权限
         if (permissionOp == PermissionOps.OP_ACCESSIBILITY) {
-            return PermissionStatus.PERMISSION_UNKNOWN;
+            boolean isAccessibilityOn = AccessibilityUtil.isAccessibilityServiceOn(context);
+            return isAccessibilityOn ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         }
 
         if (version < 19) {
@@ -63,6 +64,18 @@ public class PermissionUtils {
         }
         //通过反射调用系统方法判断
         return checkOp(context, permissionOp);
+    }
+
+    public static boolean checkPermissions(Context context, int[] ops) {
+        if (ops == null) {
+            return false;
+        }
+        for (int i = 0, len = ops.length; i < len; i++) {
+            if (checkPermission(context, ops[i]) != PermissionStatus.PERMISSION_ALLOWED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @SuppressLint("NewApi")
@@ -99,14 +112,16 @@ public class PermissionUtils {
         return false;
     }
 
-    public static boolean checkAccessibilityPermission(Context context, String accessibilitySerName) {
-        if (TextUtils.isEmpty(accessibilitySerName)) {
-            return true;
-        }
-        return AccessibilityUtil.isAccessibilityServiceOn(context, accessibilitySerName);
-    }
-
     public static void forwardPermSettingPage(Context context, int permOp) {
+        if (permOp == PermissionOps.OP_ACCESSIBILITY) {
+            forwardAccessibilitySettingPage(context);
+            return;
+        }
+        if (permOp == PermissionOps.OP_NOTIFICATION_LISTENER) {
+            forwardNotiListenerSettingPage(context);
+            return;
+        }
+
         if (RomUtils.isMiui()) {
             MiuiUtils.forwardPermSettingPage(context, permOp);
             return;
@@ -137,5 +152,19 @@ public class PermissionUtils {
         }
 
         CommonUtils.forwardAppDetailPage(context);
+    }
+
+    public static void forwardAccessibilitySettingPage(Context context) {
+        Intent accessibilityServiceIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
+        if (!CommonUtils.safelyStartActivity(context, accessibilityServiceIntent)) {
+            CommonUtils.forwardAppDetailPage(context);
+        }
+    }
+
+    public static void forwardNotiListenerSettingPage(Context context) {
+        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+        if (!CommonUtils.safelyStartActivity(context, intent)) {
+            CommonUtils.forwardAppDetailPage(context);
+        }
     }
 }
