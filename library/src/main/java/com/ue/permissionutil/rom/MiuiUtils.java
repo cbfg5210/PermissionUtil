@@ -32,7 +32,7 @@ public class MiuiUtils {
         intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
         intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
         intent.putExtra("extra_pkgname", context.getPackageName());
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -41,7 +41,7 @@ public class MiuiUtils {
         intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity");
         intent.putExtra("extra_pkgname", context.getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -50,7 +50,7 @@ public class MiuiUtils {
         intent.setPackage("com.miui.securitycenter");
         intent.putExtra("extra_pkgname", context.getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -59,7 +59,7 @@ public class MiuiUtils {
         intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", packageName, null);
         intent.setData(uri);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 

@@ -19,22 +19,17 @@ public class MeizuUtils {
         }
     }
 
-
     private static void forwardPopupWinPermSettingPage(Context context) {
         forwardPermSettingsPage(context);
     }
 
-
     private static void forwardPermSettingsPage(Context context) {
-        Intent intent;
-
-        intent = new Intent("com.meizu.safe.security.SHOW_APPSEC");
+        Intent intent = new Intent("com.meizu.safe.security.SHOW_APPSEC");
         intent.setClassName("com.meizu.safe", "com.meizu.safe.security.AppSecActivity");
         intent.putExtra("packageName", context.getPackageName());
-        if (CommonUtils.safelyStartActivity(context,intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
-
         CommonUtils.forwardAppDetailPage(context);
     }
 }

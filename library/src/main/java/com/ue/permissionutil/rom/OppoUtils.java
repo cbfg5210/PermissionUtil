@@ -30,7 +30,7 @@ public class OppoUtils {
         intent.setAction("com.oppo.safe");
         comp = new ComponentName("com.oppo.safe", "com.oppo.safe.permission.floatwindow.FloatWindowListActivity");
         intent.setComponent(comp);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -41,7 +41,7 @@ public class OppoUtils {
         intent.setAction("com.color.safecenter");
         comp = new ComponentName("com.color.safecenter", "com.color.safecenter.permission.floatwindow.FloatWindowListActivity");
         intent.setComponent(comp);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -51,7 +51,7 @@ public class OppoUtils {
         intent.setAction("com.coloros.safecenter");
         comp = new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.sysfloatwindow.FloatWindowListActivity");
         intent.setComponent(comp);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -61,17 +61,17 @@ public class OppoUtils {
 
     private static void forwardPermSettingsPage(Context context) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage("com.oppo.safe");
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
         intent = context.getPackageManager().getLaunchIntentForPackage("com.color.safecenter");
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
         intent = context.getPackageManager().getLaunchIntentForPackage("com.coloros.safecenter");
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 

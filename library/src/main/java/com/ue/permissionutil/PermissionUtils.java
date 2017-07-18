@@ -2,18 +2,16 @@ package com.ue.permissionutil;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import com.ue.permissionutil.common.AccessibilityUtil;
+import com.ue.permissionutil.common.AccessibilityUtils;
 import com.ue.permissionutil.common.CommonUtils;
+import com.ue.permissionutil.common.NotificationListenerUtils;
 import com.ue.permissionutil.common.PermissionManifestUtil;
 import com.ue.permissionutil.common.PermissionOps;
 import com.ue.permissionutil.common.PermissionStatus;
@@ -39,7 +37,7 @@ public class PermissionUtils {
         final int version = Build.VERSION.SDK_INT;
 
         if (permissionOp == PermissionOps.OP_ACCESSIBILITY) {
-            boolean isAccessibilityOn = AccessibilityUtil.isAccessibilityServiceOn(context);
+            boolean isAccessibilityOn = AccessibilityUtils.isAccessibilityServiceOn(context);
             return isAccessibilityOn ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         }
 
@@ -50,7 +48,7 @@ public class PermissionUtils {
 
         //读取通知权限单独处理,api19以下，该方法判断不了通知权限，所以要放在version<19的判断之后
         if (permissionOp == PermissionOps.OP_NOTIFICATION_LISTENER) {
-            return checkNotificationPermission(context) ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
+            return NotificationListenerUtils.isNotificationServiceOn(context) ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         }
 
         if (version >= 23 && permissionOp != PermissionOps.OP_SYSTEM_ALERT_WINDOW) {
@@ -95,30 +93,13 @@ public class PermissionUtils {
         return PermissionStatus.PERMISSION_UNKNOWN;
     }
 
-    private static boolean checkNotificationPermission(Context context) {
-        String pkgName = context.getPackageName();
-        final String flat = Settings.Secure.getString(context.getContentResolver(), "enabled_notification_listeners");
-        if (!TextUtils.isEmpty(flat)) {
-            final String[] names = flat.split(":");
-            for (int i = 0; i < names.length; i++) {
-                final ComponentName cn = ComponentName.unflattenFromString(names[i]);
-                if (cn != null) {
-                    if (TextUtils.equals(pkgName, cn.getPackageName())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     public static void forwardPermSettingPage(Context context, int permOp) {
         if (permOp == PermissionOps.OP_ACCESSIBILITY) {
-            forwardAccessibilitySettingPage(context);
+            AccessibilityUtils.goToSettingPage(context);
             return;
         }
         if (permOp == PermissionOps.OP_NOTIFICATION_LISTENER) {
-            forwardNotiListenerSettingPage(context);
+            NotificationListenerUtils.goToSettingPage(context);
             return;
         }
 
@@ -152,19 +133,5 @@ public class PermissionUtils {
         }
 
         CommonUtils.forwardAppDetailPage(context);
-    }
-
-    public static void forwardAccessibilitySettingPage(Context context) {
-        Intent accessibilityServiceIntent = new Intent("android.settings.ACCESSIBILITY_SETTINGS");
-        if (!CommonUtils.safelyStartActivity(context, accessibilityServiceIntent)) {
-            CommonUtils.forwardAppDetailPage(context);
-        }
-    }
-
-    public static void forwardNotiListenerSettingPage(Context context) {
-        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-        if (!CommonUtils.safelyStartActivity(context, intent)) {
-            CommonUtils.forwardAppDetailPage(context);
-        }
     }
 }

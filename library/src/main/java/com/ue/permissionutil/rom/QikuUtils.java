@@ -26,7 +26,7 @@ public class QikuUtils {
         intent = new Intent();
         comp = new ComponentName("com.android.settings", "com.android.settings.Settings$OverlaySettingsActivity");
         intent.setComponent(comp);
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -36,7 +36,7 @@ public class QikuUtils {
     private static void forwardPermSettingsPage(Context context) {
         Intent intent = new Intent();
         intent.setClassName("com.qihoo360.mobilesafe", "com.qihoo360.mobilesafe.ui.index.AppEnterActivity");
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 

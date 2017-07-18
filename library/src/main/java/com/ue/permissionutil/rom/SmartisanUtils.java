@@ -31,7 +31,7 @@ public class SmartisanUtils {
         comp = new ComponentName("com.smartisanos.security", "com.smartisanos.security.SwitchedPermissions");
         intent.setComponent(comp);
         intent.putExtra("index", 17); // 不同版本会不一样
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -42,7 +42,7 @@ public class SmartisanUtils {
         comp = new ComponentName("com.smartisanos.security", "com.smartisanos.security.SwitchedPermissions");
         intent.setComponent(comp);
         intent.putExtra("permission", new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW});
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 
@@ -53,7 +53,7 @@ public class SmartisanUtils {
         Intent intent;
 
         intent = context.getPackageManager().getLaunchIntentForPackage("com.smartisanos.security");
-        if (CommonUtils.safelyStartActivity(context, intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 

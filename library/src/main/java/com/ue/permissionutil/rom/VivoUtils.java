@@ -33,7 +33,7 @@ public class VivoUtils {
         comp = new ComponentName("com.iqoo.secure", "com.iqoo.secure.MainActivity");
         intent.setComponent(comp);
 
-        if (CommonUtils.safelyStartActivity(context,intent)) {
+        if (CommonUtils.safelyStartActivity(context, intent, null)) {
             return;
         }
 

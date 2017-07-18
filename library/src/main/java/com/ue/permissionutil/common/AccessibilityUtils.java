@@ -1,18 +1,22 @@
 package com.ue.permissionutil.common;
 
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
 
-public class AccessibilityUtil {
+public class AccessibilityUtils {
 
-    private AccessibilityUtil() {
+    private AccessibilityUtils() {
         throw new UnsupportedOperationException();
     }
 
     private static ArrayList<String> getAllAccessibilityServices(Context context) {
+        if (context == null) {
+            return null;
+        }
         TextUtils.SimpleStringSplitter colonSplitter = new TextUtils.SimpleStringSplitter(':');
         ArrayList<String> allAccessibilityServices = new ArrayList<String>();
 
@@ -20,11 +24,11 @@ public class AccessibilityUtil {
                 context.getApplicationContext().getContentResolver(),
                 Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
 
-        if (null != settingValue) {
+        if (!TextUtils.isEmpty(settingValue)) {
             colonSplitter.setString(settingValue);
             while (colonSplitter.hasNext()) {
-                String accessabilityService = colonSplitter.next();
-                allAccessibilityServices.add(accessabilityService);
+                String accessibilityService = colonSplitter.next();
+                allAccessibilityServices.add(accessibilityService);
             }
         }
         return allAccessibilityServices;
@@ -36,7 +40,16 @@ public class AccessibilityUtil {
      * @return
      */
     public static boolean isAccessibilityServiceOn(Context context, String serviceName) {
+        if (context == null) {
+            return false;
+        }
+        if (TextUtils.isEmpty(serviceName)) {
+            return isAccessibilityServiceOn(context);
+        }
         ArrayList<String> allAccessibilityServices = getAllAccessibilityServices(context);
+        if (allAccessibilityServices == null || allAccessibilityServices.size() == 0) {
+            return false;
+        }
         StringBuilder concat = new StringBuilder();
         concat.append(context.getPackageName());
         concat.append('/');
@@ -45,16 +58,30 @@ public class AccessibilityUtil {
     }
 
     public static boolean isAccessibilityServiceOn(Context context) {
-        ArrayList allAccessibilityServices = getAllAccessibilityServices(context);
-
+        if (context == null) {
+            return false;
+        }
+        ArrayList<String> allAccessibilityServices = getAllAccessibilityServices(context);
+        String pkgName = context.getPackageName();
         if (allAccessibilityServices == null && allAccessibilityServices.size() == 0) {
             return false;
         }
-        for (int i = allAccessibilityServices.size() - 1; i >= 0; --i) {
-            if (((String) allAccessibilityServices.get(i)).contains(context.getPackageName())) {
+        for (int i = allAccessibilityServices.size() - 1; i >= 0; i--) {
+            if (allAccessibilityServices.get(i).contains(pkgName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static void goToSettingPage(Context context) {
+        if (context == null) {
+            return;
+        }
+        Intent accessibilityServiceIntent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        if (CommonUtils.safelyStartActivity(context, accessibilityServiceIntent, null)) {
+            return;
+        }
+        CommonUtils.forwardAppDetailPage(context);
     }
 }
