@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
@@ -39,6 +40,10 @@ public class PermissionUtils {
         if (permissionOp == PermissionOps.OP_ACCESSIBILITY) {
             boolean isAccessibilityOn = AccessibilityUtils.isAccessibilityServiceOn(context);
             return isAccessibilityOn ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
+        }
+
+        if (version >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(context) ? PermissionStatus.PERMISSION_ALLOWED : PermissionStatus.PERMISSION_DENIED;
         }
 
         if (version < 19) {
@@ -102,7 +107,11 @@ public class PermissionUtils {
             NotificationListenerUtils.goToSettingPage(context);
             return;
         }
-
+        if (permOp == PermissionOps.OP_SYSTEM_ALERT_WINDOW) {
+            if (CommonUtils.forwardAlertWindowPage(context)) {
+                return;
+            }
+        }
         if (RomUtils.isMiui()) {
             MiuiUtils.forwardPermSettingPage(context, permOp);
             return;

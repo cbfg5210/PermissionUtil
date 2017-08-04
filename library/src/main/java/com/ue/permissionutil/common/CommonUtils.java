@@ -3,6 +3,7 @@ package com.ue.permissionutil.common;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -21,6 +22,13 @@ import static android.os.Looper.getMainLooper;
  */
 
 public class CommonUtils {
+    public static boolean forwardAlertWindowPage(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return false;
+        }
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
+        return CommonUtils.safelyStartActivity(context, intent, null);
+    }
 
     public static void forwardAppDetailPage(Context context) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
